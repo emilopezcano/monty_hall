@@ -22,6 +22,30 @@ library(waffle)
 ui <- fluidPage(theme = shinytheme("flatly"),
                 navbarPage("Concurso de Monty Hall",
                            # fluid = FALSE,
+                           id = "apartados",
+                           tabPanel("Introducción",
+                                    h2(em("Let's make a deal")),
+                                    tabsetPanel(
+                                        tabPanel("Descripción",
+                                                 box(
+                                                     br(),
+                                                     includeMarkdown("intro.md")
+                                                 )),
+                                        tabPanel("Frecuencias",
+                                                 box(
+                                                     br(),
+                                                     withMathJax(
+                                                         includeMarkdown("freqs.md")   
+                                                     ))),
+                                        tabPanel("Enumeración posibilidades",
+                                                 box(
+                                                     br(),
+                                                     includeMarkdown("laplace.md"))),
+                                        tabPanel("Fórmula de Bayes",
+                                                 box(
+                                                     br(),
+                                                     includeMarkdown("bayes.md")))
+                                    )),
                            tabPanel("¡Juega!",
                                     fixedRow(
                                         actionBttn(
@@ -50,10 +74,10 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                     textOutput("resumen"),
                                     plotOutput("grafico")),
                            tabPanel("Simulación"),
-                           tabPanel("Descripción",
-                                    h2(em("Let's make a deal")),
-                                    includeMarkdown("explicacion.md"))
-                ))
+                           tabPanel(span(icon("creative-commons", class = "fa-lg"), "Créditos"),
+                                    includeMarkdown("creditos.md"))
+                ),
+                 p("©", a("Emilio López Cano", href="http://emilio.lcano.com"),  " 2020"))
 
 server <- function(input, output, session) {
     
@@ -281,12 +305,12 @@ server <- function(input, output, session) {
         maxjugadas <- max(length(dcambiadas), length(dnocambiadas))
         pcambio <- waffle(table(dcambiadas),
                           title = "Partidas en las que cambiaste",
-               colors = c("orange", "lightgrey"),
-               rows = ifelse(maxjugadas > 10, 4, 2))
+                          colors = c("orange", "lightgrey"),
+                          rows = ifelse(maxjugadas > 10, 4, 2))
         pnocambio <- waffle(table(dnocambiadas),
-                          title = "Partidas en las que NO cambiaste",
-               colors = c("orange", "lightgrey"),
-               rows = ifelse(maxjugadas > 10, 4, 2))
+                            title = "Partidas en las que NO cambiaste",
+                            colors = c("orange", "lightgrey"),
+                            rows = ifelse(maxjugadas > 10, 4, 2))
         iron(pcambio, pnocambio)
         
     })
