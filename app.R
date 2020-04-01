@@ -222,7 +222,7 @@ server <- function(input, output, session) {
             }else{
                 str_puerta <- "elegida"
             }
-        } else if(mostrar() == 2){
+        } else if(mostrar() == 3){
             str_puerta <- "cabra"
         } else if(fase() >= 4 & cambiar()){
             str_puerta <- paste0(premios()[2], "_premio")
@@ -235,7 +235,7 @@ server <- function(input, output, session) {
             src = paste0("img/puerta_", str_puerta, ".png"),
             contentType = "image/png",
             width = "100%",
-            alt = "Puerta 2"
+            alt = "Puerta 1"
         ))
     }, deleteFile = FALSE)
     output$puerta3 <- renderImage({
@@ -243,8 +243,8 @@ server <- function(input, output, session) {
         if(input$puerta == 3){
             if (fase() >= 4 & !cambiar()){
                 str_puerta <- paste0(premios()[3], "_premio")
-            } else if(cambiar() & fase() >= 3){
-                str_puerta <- paste0(premios()[3], "_cambiada")
+            } else if(cambiar() & fase() >= 4){
+                str_puerta <-  paste0(premios()[3], "_cambiada")
             }else{
                 str_puerta <- "elegida"
             }
