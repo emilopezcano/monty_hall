@@ -74,7 +74,7 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                         column(imageOutput("puerta3", height = "auto"), class="col-xs-4", width = 2)
                                     ),
                                     br(),
-                                    div(uiOutput("uicambio")),
+                                    uiOutput("uicambio"),
                                     # htmlOutput("test")),
                                     p(uiOutput("uibtnPremio")),
                                     div(tableOutput("tpremios")),
@@ -168,8 +168,7 @@ server <- function(input, output, session) {
         req(fase() == 3)
         switchInput(
             inputId = "cambio",
-            label = "¿Cambias la puerta?", 
-            labelWidth = "80px",
+            label = "¿Cambias?", 
             onStatus = "success", 
             offStatus = "danger",
             onLabel = "Sí",
