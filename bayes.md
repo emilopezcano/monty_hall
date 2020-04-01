@@ -1,9 +1,9 @@
-Hay dos conceptos clave en Estadística que aparecen en el problema de Monty Hall.
+Hay dos conceptos clave en Estadística que aparecen en el problema de _Monty Hall_.
 El primero es el de la **aleatorización**. El resultado es el que es porque partimos
 de la base que los premios se asignan a las puertas aleatoriamente. Y después,
 el concursante también elige la puerta al azar entre las tres (son lo que se
 llama sucesos equiprobables). El resultado sería distinto si, por poner el caso,
-el concursante tenga alguna suerte de poder adivinatorio que se salte las leyes
+el concursante tuviera alguna suerte de poder adivinatorio que se salte las leyes
 del azar. Este hecho es muy común en situaciones de toma de decisión en la
 vida cotidiana, en los negocios, o incluso en la política. El decisor puede
 tener una "corazonada", o actuar por "intuición", y entonces los sucesos

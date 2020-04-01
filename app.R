@@ -46,8 +46,8 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                                  box(
                                                      br(),
                                                      includeMarkdown("laplace.md"),
-                                                     br(),
-                                                     grVizOutput("diagrama"))),
+                                                     br()),
+                                                 grVizOutput("diagrama")),
                                         tabPanel("Fórmula de Bayes",
                                                  box(
                                                      br(),
@@ -330,16 +330,7 @@ server <- function(input, output, session) {
             p("Cambiar: ", cambiar()))
     })
     output$diagrama <- renderGrViz({
-        grViz("
-digraph metodos{
-  graph [layout=dot, rankdir = TB, compound = true, fontsize = 10, color = crimson]
-  node [shape = box]
-  'Elige puerta'; 'Tiene cabra 1'; 'Tiene cabra 2'; 'Tiene coche'
-  'Elige puerta'-> 'Tiene cabra 1'
-  'Elige puerta'-> 'Tiene cabra 2'
-  'Elige puerta'-> 'Tiene coche'
-}  
-")
+        grViz(readLines("diagram.gv"))
     })
     
 }

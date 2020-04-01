@@ -1,0 +1,32 @@
+digraph dot{
+node [shape = box, fillcolor = white, style = filled, color = gray]
+puerta [label = 'Eliges puerta'] 
+cabra1 [label = 'Tiene cabra']
+cabra2 [label = 'Tiene cabra']
+coche [label = 'Tiene coche']
+node [shape = box, fillcolor = gray, style = filled]
+quedas1 [label = 'Te la quedas']
+quedas2 [label = 'Te la quedas'] 
+quedasc  [label = 'Te la quedas']
+cabra1cabra [label = 'Ganas una cabra']
+cabra2cabra [label = 'Ganas una cabra']
+cochecoche [label = 'Ganas un coche']
+node [shape = box, fillcolor = orange, style = filled]
+cambias2 [label = 'La cambias'] 
+cambias1 [label = 'La cambias']
+cambiasc [label = 'La cambias']
+cabra1coche [label = 'Ganas un coche']
+cabra2coche [label = 'Ganas un coche']
+cochecabra [label = 'Ganas una cabra']
+
+edge [color = gray]
+'puerta'-> 'cabra1'
+cabra1 -> quedas1 -> cabra1cabra
+cabra1 -> cambias1 -> cabra1coche
+'puerta'-> 'cabra2'
+cabra2 -> quedas2 -> cabra2cabra
+cabra2 -> cambias2 -> cabra2coche
+'puerta'-> 'coche'
+coche -> quedasc -> cochecoche
+coche -> cambiasc -> cochecabra
+}  
