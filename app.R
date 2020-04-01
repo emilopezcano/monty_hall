@@ -82,7 +82,7 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                     plotOutput("grafico")),
                            tabPanel("Simulación"),
                            tabPanel(span(icon("creative-commons", class = "fa-lg"), "Créditos"),
-                                    includeMarkdown("creditos.md"))
+                                    box(includeMarkdown("creditos.md")))
                 ),
                 p("©", a("Emilio López Cano", href="http://emilio.lcano.com"),  " 2020"))
 
