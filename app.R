@@ -18,8 +18,13 @@ library(shinythemes)
 library(knitr)
 library(kableExtra)
 library(waffle)
+library(DiagrammeR)
+library(htmlwidgets)
 
 ui <- fluidPage(theme = shinytheme("flatly"),
+                tags$head(
+                    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
+                ),
                 navbarPage("Concurso de Monty Hall",
                            # fluid = FALSE,
                            id = "apartados",
@@ -40,7 +45,9 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                         tabPanel("Enumeración posibilidades",
                                                  box(
                                                      br(),
-                                                     includeMarkdown("laplace.md"))),
+                                                     includeMarkdown("laplace.md"),
+                                                     br(),
+                                                     grVizOutput("diagrama"))),
                                         tabPanel("Fórmula de Bayes",
                                                  box(
                                                      br(),
@@ -77,7 +84,7 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                            tabPanel(span(icon("creative-commons", class = "fa-lg"), "Créditos"),
                                     includeMarkdown("creditos.md"))
                 ),
-                 p("©", a("Emilio López Cano", href="http://emilio.lcano.com"),  " 2020"))
+                p("©", a("Emilio López Cano", href="http://emilio.lcano.com"),  " 2020"))
 
 server <- function(input, output, session) {
     
@@ -321,6 +328,18 @@ server <- function(input, output, session) {
             p("Fase: ", fase()),
             p("Mostrar: ", mostrar()),
             p("Cambiar: ", cambiar()))
+    })
+    output$diagrama <- renderGrViz({
+        grViz("
+digraph metodos{
+  graph [layout=dot, rankdir = TB, compound = true, fontsize = 10, color = crimson]
+  node [shape = box]
+  'Elige puerta'; 'Tiene cabra 1'; 'Tiene cabra 2'; 'Tiene coche'
+  'Elige puerta'-> 'Tiene cabra 1'
+  'Elige puerta'-> 'Tiene cabra 2'
+  'Elige puerta'-> 'Tiene coche'
+}  
+")
     })
     
 }

@@ -51,8 +51,8 @@ coche, queremos calcular $P(C_2 | J_1, M_3)$. Al aplicar la fórmula de Bayes:
 $$P(C_2 | M_3, J_1) = \frac{P(M_3 | C_2, J_1)\cdot P(C_2, J_1)}{P(J_1, M_3)}=*$$
 
 Aquí aparece la información relevante. La probabilidad de que Monty 
-destape la puerta 3 ($M3$) condicionada a que el coche está en la puerta
-2 y hemos elegido la puerta 1 ($C2, J1$) es igual... a 1! Porque siempre
+destape la puerta 3 ($M_3$) condicionada a que el coche está en la puerta
+2 y hemos elegido la puerta 1 ($C_2, J_1$) es igual... ¡a 1! Porque siempre
 va a elegir la puerta de la cabra. Entonces podemos desarrollar la expresión anterior
 y llegar al resultado que hemos obtenido por los otros métodos:
 
