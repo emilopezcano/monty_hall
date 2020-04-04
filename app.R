@@ -20,14 +20,17 @@ library(kableExtra)
 library(waffle)
 library(DiagrammeR)
 library(htmlwidgets)
+library(plotly)
+library(tidyr)
 
+## ui ----
 ui <- fluidPage(theme = shinytheme("flatly"),
                 tags$head(
                     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")
                 ),
                 navbarPage("Concurso de Monty Hall",
-                           # fluid = FALSE,
                            id = "apartados",
+                           ## . intro ----
                            tabPanel("Introducción",
                                     h2(em("Let's make a deal")),
                                     tabsetPanel(
@@ -53,6 +56,7 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                                      br(),
                                                      includeMarkdown("bayes.md")))
                                     )),
+                           ## . juego ----
                            tabPanel("¡Juega!",
                                     fixedRow(
                                         actionBttn(
@@ -74,26 +78,51 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                                         column(imageOutput("puerta3", height = "auto"), class="col-xs-4", width = 2)
                                     ),
                                     br(),
-                                    uiOutput("uicambio"),
-                                    # htmlOutput("test")),
+                                    fixedRow(column(width=12, uiOutput("uicambio"))),
                                     p(uiOutput("uibtnPremio")),
                                     div(tableOutput("tpremios")),
                                     textOutput("resumen"),
                                     plotOutput("grafico")),
-                           tabPanel("Simulación"),
+                           ## · Simulación ----
+                           tabPanel("Simulación",
+                                    sliderInput("nsim", "Número de partidas",
+                                                min = 100, max = 1000,
+                                                step = 100,
+                                                value = 10),
+                                    actionBttn(
+                                        inputId = "btnSimular",
+                                        label = "Empezar",
+                                        style = "material-flat",
+                                        icon = icon("play-circle"),
+                                        color = "royal"
+                                    ),
+                                    tableOutput("spremios"),
+                                    uiOutput("sresumen"),
+                                    plotlyOutput("sanim"),
+                                    plotOutput("sgrafico")),
                            tabPanel(span(icon("creative-commons", class = "fa-lg"), "Créditos"),
                                     box(includeMarkdown("creditos.md")))
                 ),
-                p("©", a("Emilio López Cano", href="http://emilio.lcano.com"),  " 2020"))
-
+                div("©",
+                    a("Emilio López Cano", href="http://emilio.lcano.com"),
+                    " 2020",
+                    style='position:relative;
+                           height:2em;
+                           bottom: 0;
+                           margin-left:15px;
+                           margin-top:15px;
+                           width: 100%;'))
+## server ----
 server <- function(input, output, session) {
-    
+    ## reactivevals ----
     premios <- reactiveVal()
     fase <- reactiveVal(0)
     mostrar <- reactiveVal(0)
     cambiar <- reactiveVal(FALSE)
     premio <- reactiveVal()
     partidas <- reactiveVal(tibble())
+    spartidas <- reactiveVal(tibble())
+    ## Observers ----
     observeEvent(input$btnEmpezar,
                  {
                      premios(sample(c("coche", "cabra", "cabra")))
@@ -129,6 +158,33 @@ server <- function(input, output, session) {
                                   bind_rows(tibble(premio = premio(),
                                                    cambio = cambiar())))
                  })
+    observeEvent(input$btnSimular,
+                 {
+                     spartidas(tibble())
+                     for (cambiar in 0:1){
+                         for (partida in 1:input$nsim){
+                             puerta <- sample(c("cabra", "cabra", "coche"), 1)
+                             if(cambiar){
+                                 if (puerta == "cabra"){
+                                     premio <- "coche"
+                                 } else{
+                                     premio <- "cabra"
+                                 }
+                             } else{
+                                 if (puerta == "coche"){
+                                     premio <- "coche"
+                                 } else{
+                                     premio <- "cabra"
+                                 }
+                             }
+                             spartidas(spartidas() %>% 
+                                           bind_rows(tibble(partida = partida,
+                                                            cambio = cambiar,
+                                                            premio = premio
+                                           )))
+                         }
+                     }
+                 })
     observe({
         req(input$puerta)
         if(input$puerta > 0) fase(2)
@@ -139,6 +195,7 @@ server <- function(input, output, session) {
             cambiar(TRUE)
         } 
     })
+    ## oJuego ----
     output$uipuerta <- renderUI({
         req(fase() == 1)
         radioGroupButtons(
@@ -168,7 +225,7 @@ server <- function(input, output, session) {
         req(fase() == 3)
         switchInput(
             inputId = "cambio",
-            label = "¿Cambias?", 
+            label = "¿Cambias?",
             onStatus = "success", 
             offStatus = "danger",
             onLabel = "Sí",
@@ -221,7 +278,7 @@ server <- function(input, output, session) {
             }else{
                 str_puerta <- "elegida"
             }
-        } else if(mostrar() == 3){
+        } else if(mostrar() == 2){
             str_puerta <- "cabra"
         } else if(fase() >= 4 & cambiar()){
             str_puerta <- paste0(premios()[2], "_premio")
@@ -331,8 +388,105 @@ server <- function(input, output, session) {
     output$diagrama <- renderGrViz({
         grViz(readLines("diagram.gv"))
     })
-    
+    ## oSimulación ----
+    output$spremios <- function() {
+        req(nrow(spartidas()) > 0)
+        partis <- spartidas() %>%
+            mutate(cambio = ifelse(cambio, "Cambiada", "No Cambiada"))
+        kable(prop.table(table(partis$cambio, partis$premio), margin = 1),
+              format = "html", caption = "Frecuencias relativas",
+              digits = 2) %>%
+            kable_styling(bootstrap_options = "striped", full_width = F, position = "left")
+        
+        # kable(spartidas())
+    }
+    output$sresumen <- renderUI({
+        req(nrow(spartidas()) > 0)
+        # saveRDS(spartidas(), "_temp.rds")
+        partidas <- nrow(spartidas())
+        cambiadas <- spartidas() %>% filter(cambio == 1) %>% count()
+        nocambiadas <- partidas - cambiadas
+        cochecambiadas <- spartidas() %>% filter(cambio, premio == "coche") %>% count()
+        cochenocambiadas <- spartidas() %>% filter(!cambio, premio == "coche") %>% count()
+        str <- paste0("Se han jugado ", partidas, " partidas.")
+        if (cambiadas > 0){
+            str <- c(str, paste0("En ", cambiadas,
+                                 " se ha cambiado de puerta y el ",
+                                 round(100*cochecambiadas/cambiadas, 1),
+                                 "% de las veces se ha ganado el coche. "))
+        }
+        if (nocambiadas > 0){
+            str <- c(str, paste0("En ", nocambiadas,
+                                 " NO se ha cambiado de puerta y el ",
+                                 round(100*cochenocambiadas/nocambiadas, 1),
+                                 "% de las veces se ha ganado el coche. Pulsa <b>Play</b> para animar el gráfico."))
+        }
+        HTML(paste(str,collapse = " "))
+        
+    })
+    output$sgrafico <- renderPlot({
+        req(nrow(spartidas()) > 0)
+        dcambiadas <- spartidas() %>%
+            filter(cambio == 1) %>%
+            arrange(premio) %>%
+            select(premio) %>%
+            pull()
+        dnocambiadas <- spartidas() %>%
+            filter(cambio == 0) %>%
+            arrange(premio) %>%
+            select(premio) %>%
+            pull()
+        req(length(dcambiadas) >  0 & length(dnocambiadas) > 0)
+        # maxjugadas <- max(length(dcambiadas), length(dnocambiadas))
+        pcambio <- waffle(table(dcambiadas),
+                          title = "Partidas en las que se cambió",
+                          colors = c("orange", "lightgrey"),
+                          # rows = ifelse(maxjugadas > 10, 4, 2))
+                          rows = 10)
+        pnocambio <- waffle(table(dnocambiadas),
+                            title = "Partidas en las que NO se cambió",
+                            colors = c("orange", "lightgrey"),
+                            rows = 10)
+        iron(pcambio, pnocambio)
+
+    })
+    output$sanim <- renderPlotly({
+        req(nrow(spartidas()) > 0)
+        accumulate_by <- function(dat, var) {
+            var <- lazyeval::f_eval(var, dat)
+            lvls <- plotly:::getLevels(var)
+            dats <- lapply(seq_along(lvls), function(x) {
+                cbind(dat[var %in% lvls[seq(1, x)], ], frame = lvls[[x]])
+            })
+            dplyr::bind_rows(dats)
+        }
+        spartidas() %>% 
+            mutate(cambio = factor(cambio, levels = 1:0, labels = c("Cambiada", "No cambiada"))) %>%
+            group_by(cambio) %>% 
+            mutate(grupo = rep(seq(1:(n()/10)), each = 10)) %>% 
+            mutate(cocheacum = cumsum(premio == "coche")/partida) %>% 
+            ungroup %>% 
+            accumulate_by(~grupo) %>% 
+            plot_ly(x = ~partida,
+                    y = ~cocheacum,
+                    split = ~cambio,
+                    frame = ~frame,
+                    mode = "lines",
+                    type = "scatter") %>% 
+            layout(title = "Convergencia de la probabilidad de obtener el coche",
+                   xaxis = list(title = "Partidas"),
+                   yaxis = list (title = "Probabilidad acumulada de coche")) %>%
+            layout(legend = list(x = 0.7, y = 1,
+                                 title = list(text='<b>Puerta</b>')),
+                   yaxis = list(range = c(0, 1))) 
+        # %>% 
+        #     animation_slider(hide=TRUE) %>% 
+        #     animation_button(xanchor = "left", yanchor = "top")
+    })
 }
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+
+
+
