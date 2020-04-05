@@ -1,0 +1,17 @@
+El problema de Monty Hall
+=========================
+
+Aplicación Shiny para simular el popular concurso de Monty Hall para
+ilustrar la importancia de la probabilidad condicionada. La simulación
+se puede hacer partida a partida o en un bloque de partidas.
+
+Puedes ver una versión funcionando en el siguiente enlace:
+
+https://shiny.uclm.es/apps/montyhall/
+
+Envía un _issue_ si algo no te funciona, o _pull request_ si tienes alguna sugerencia de mejora. Verifica primero que tienes las versiones de los paquetes necesarios. Puede que sea necesario instalar una versión distinta de la que hay en CRAN.
+
+```{r}
+sessionInfo()
+```
+
