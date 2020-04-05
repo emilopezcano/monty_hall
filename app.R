@@ -1,12 +1,3 @@
-#
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(shinyWidgets)
 library(png)
@@ -22,6 +13,9 @@ library(DiagrammeR)
 library(htmlwidgets)
 library(plotly)
 library(tidyr)
+
+## Run before push just in case something fails:
+knitr::knit("readme.Rmd")
 
 ## ui ----
 ui <- fluidPage(theme = shinytheme("flatly"),
@@ -377,14 +371,7 @@ server <- function(input, output, session) {
         iron(pcambio, pnocambio)
         
     })
-    
-    output$test <- renderUI({
-        div(p("Elegida: ", input$puerta),
-            p("Premios:", paste(premios(), collapse = "; ")), 
-            p("Fase: ", fase()),
-            p("Mostrar: ", mostrar()),
-            p("Cambiar: ", cambiar()))
-    })
+
     output$diagrama <- renderGrViz({
         grViz(readLines("diagram.gv"))
     })
@@ -483,6 +470,14 @@ server <- function(input, output, session) {
         #     animation_slider(hide=TRUE) %>% 
         #     animation_button(xanchor = "left", yanchor = "top")
     })
+    
+    # output$test <- renderUI({
+    #     div(p("Elegida: ", input$puerta),
+    #         p("Premios:", paste(premios(), collapse = "; ")), 
+    #         p("Fase: ", fase()),
+    #         p("Mostrar: ", mostrar()),
+    #         p("Cambiar: ", cambiar()))
+    # })
 }
 
 # Run the application 
