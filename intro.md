@@ -7,7 +7,7 @@ La solución puede parecer contraintuitiva, aunque tanto desde el razonamiento a
 El problema de _Monty Hall_ dio lugar a historias curiosas que se pueden consultar en 
 [1]. Por ejemplo, el gran matemático Paul Erdös solo aceptó
 como buena la solución real tras comprobarla en una simulación por ordenador.
-Se puede simular el juego en la pestaña principal de
+Se puede simular el juego en la pestaña `¡Juega!` de
 [esta aplicación](https://elcano.shinyapps.io/monty_hall/).
 Puedes comprobar que no hay trampas consultando el código en [este repositorio de GitHub](https://github.com/emilopezcano/monty_hall). Te invito a que concurses
 durante un buen número de jugadas y
