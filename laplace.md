@@ -36,7 +36,7 @@ que ganaremos el coche. Por tanto:
 $$P(\text{coche}|\text{cambio})=\frac{2}{3}$$
 
 Es decir, tenemos el doble de probabilidad de ganar el coche si cambiamos de puerta,
-$\frac{2}{6}\simeq 0,67$. Dos de cada tres veces ganaremos el coche. En el siguiente
+$\frac{2}{3}\simeq 0,67$. Dos de cada tres veces ganaremos el coche. En el siguiente
 diagrama se pueden contar fácilmente los casos favorables y posibles de ambas
 estrategias.
 
