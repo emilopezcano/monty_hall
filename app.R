@@ -24,33 +24,40 @@ ui <- fluidPage(theme = shinytheme("flatly"),
                 ),
                 navbarPage("Concurso de Monty Hall",
                            id = "apartados",
-                           ## . intro ----
+                           ## · intro ----
                            tabPanel("Introducción",
                                     h2(em("Let's make a deal")),
                                     tabsetPanel(
                                         tabPanel("Descripción",
-                                                 box(
+                                                 box(width = 8,
                                                      br(),
                                                      includeMarkdown("intro.md")
                                                  )),
                                         tabPanel("Frecuencias",
-                                                 box(
+                                                 box(width = 8,
                                                      br(),
                                                      withMathJax(
                                                          includeMarkdown("freqs.md")   
                                                      ))),
                                         tabPanel("Enumeración posibilidades",
-                                                 box(
+                                                 box(width = 8,
                                                      br(),
                                                      includeMarkdown("laplace.md"),
-                                                     br()),
-                                                 grVizOutput("diagrama")),
-                                        tabPanel("Fórmula de Bayes",
-                                                 box(
                                                      br(),
-                                                     includeMarkdown("bayes.md")))
+                                                     grVizOutput("diagrama"))
+                                                     ),
+                                        tabPanel("Fórmula de Bayes",
+                                                 box(width = 8,
+                                                     br(),
+                                                     includeMarkdown("bayes.md"))),
+                                        tabPanel("Partición Espacio",
+                                                 box(width = 8,
+                                                     br(),
+                                                     withMathJax(
+                                                         includeMarkdown("particion.md")))
+                                                     )
                                     )),
-                           ## . juego ----
+                           ## · juego ----
                            tabPanel("¡Juega!",
                                     fixedRow(
                                         actionBttn(
